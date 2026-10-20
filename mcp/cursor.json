@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "kellyiq": {
+      "url": "https://api.kellyiq.com/mcp",
+      "headers": { "Authorization": "Bearer ${env:KELLYIQ_API_KEY}" }
+    }
+  }
+}

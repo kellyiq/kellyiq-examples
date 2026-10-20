@@ -1,0 +1,12 @@
+{
+  "inputs": [
+    { "type": "promptString", "id": "kellyiq-key", "description": "KellyIQ API key", "password": true }
+  ],
+  "servers": {
+    "kellyiq": {
+      "type": "http",
+      "url": "https://api.kellyiq.com/mcp",
+      "headers": { "Authorization": "Bearer ${input:kellyiq-key}" }
+    }
+  }
+}
