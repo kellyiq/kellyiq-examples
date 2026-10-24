@@ -1,9 +1,0 @@
-{
-  "mcpServers": {
-    "kellyiq": {
-      "command": "npx",
-      "args": ["mcp-remote@latest", "https://api.kellyiq.com/mcp", "--header", "Authorization:${KELLYIQ_AUTH}"],
-      "env": { "KELLYIQ_AUTH": "Bearer kiqa_..." }
-    }
-  }
-}

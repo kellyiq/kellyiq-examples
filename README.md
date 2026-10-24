@@ -39,15 +39,16 @@ Prefer a package? `pip install kellyiq` ([kellyiq-python](https://github.com/kel
 ## AI assistants (MCP)
 
 KellyIQ runs a hosted MCP server at `https://api.kellyiq.com/mcp`, so your assistant can size a
-slate as one of its tools. Ready-to-use configs are in [`mcp/`](mcp):
+slate as one of its tools. Claude connects by signing in; coding tools use an API key, with
+ready-to-use configs in [`mcp/`](mcp):
 
 | Assistant | Setup |
 |---|---|
+| Claude (web, desktop, mobile) | Settings, Connectors, Add custom connector, paste the URL, then Connect and sign in |
 | Claude Code | [`mcp/claude-code.md`](mcp/claude-code.md) |
 | Cursor | [`mcp/cursor.json`](mcp/cursor.json) |
 | VS Code (GitHub Copilot) | [`mcp/vscode.json`](mcp/vscode.json) |
 | Gemini CLI | [`mcp/gemini-cli.md`](mcp/gemini-cli.md) |
-| Claude Desktop | [`mcp/claude-desktop.json`](mcp/claude-desktop.json) |
 
 Full guide: [AI assistants (MCP)](https://www.kellyiq.com/developers/mcp).
 
