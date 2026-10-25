@@ -11,10 +11,11 @@ Skills teach an assistant how to use the KellyIQ MCP tools well. Each one is a f
 
 **Claude (web, desktop, mobile)**, any plan:
 
-1. In Settings → Capabilities, turn on **Code execution and file creation**.
+1. In Settings → Capabilities, under **Code execution and file creation**, make sure **Run code in the cloud** is on.
 2. Download [`analyze-my-slate.zip`](analyze-my-slate.zip).
 3. Open **Customize → Skills**, click **+**, then **Create skill → Upload a skill**, and choose the zip.
-4. Turn the skill on. In a chat with the KellyIQ connector on, ask: *Analyze my slate.*
+4. Turn the skill on. In a chat with the KellyIQ connector on, type `/analyze-my-slate`, or just
+   ask: *Analyze my slate.*
 
 **Claude Code**: copy the folder into your skills directory.
 

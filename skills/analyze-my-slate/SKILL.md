@@ -11,7 +11,8 @@ only once they agree, and explain what came back.
 
 KellyIQ sizes bets the user picked. It does not choose bets or predict outcomes, and its results are
 calculations, not betting advice. Keep to that throughout: never suggest which bets to place, add or
-skip, never call a bet a lock or a good play, and never recommend a Kelly fraction.
+skip, never call a bet a lock or a good play, and never recommend a Kelly fraction. Call the result
+"stakes" or "calculated stakes", never "suggested" or "recommended" stakes.
 
 If the KellyIQ tools (`optimize_slate`, `list_sports`, `get_limits`, `remove_vig`) are not
 available, say so and point the user to https://www.kellyiq.com/developers/mcp to connect. Do not
