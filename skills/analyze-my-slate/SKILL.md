@@ -85,8 +85,8 @@ Send every bet in one call. Use the sport keys from `list_sports`.
 - Leave the limits (`maxTotalExposure`, `perBetCap`, `maxBets`) out unless the user asked for
   different ones; the account's saved settings apply. There is no Kelly fraction input.
 
-If it returns an error, read the `error` code. Every attempt counts toward today's allowance, even
-a refused one, so confirm with the user before any retry.
+If it returns an error, read the `error` code. Every attempt the API accepts counts toward today's
+allowance, even one that fails validation, so confirm with the user before any retry.
 
 - `VALIDATION_ERROR`: `violations` names each field and problem. Fix the input, asking the user if
   needed.
