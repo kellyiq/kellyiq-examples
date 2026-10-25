@@ -120,13 +120,14 @@ adjust them.
 4. **Kelly fraction and risk**: `allocation.kellyMultiplier` is the fraction of full Kelly the
    optimizer chose (for example 0.35). From `risk.riskAdjusted.independent` (the allocation used):
    the chance the slate loses money overall (`probLoss`, show it as a percent), the expected
-   profit (`meanProfit`), and `var5` (1 in 20 slates end at this result or worse). When
-   `risk.riskAdjusted.correlated` is not null, report it too: it allows for bets that tend to win
-   or lose together, so it is the more realistic figure for related bets. Compare with
-   `risk.full`, `risk.half` and `risk.quarter` so the user sees what larger and smaller fractions
-   would do; each pick's stake at those fractions is in `picks[].sizing.full`, `.half` and
-   `.quarter`. If the user asks which to use, explain the trade-off (smaller means smaller swings
-   and slower growth) and leave the choice to them.
+   profit (`meanProfit`), and `var5` (1 in 20 slates end at this result or worse). These treat
+   the bets as independent (`correlated` is always null). If some bets are related, such as two
+   in the same game, say so plainly: the figures assume they are not, and allowing for that is
+   the user's call. Compare with the `independent` figures of `risk.full`, `risk.half` and
+   `risk.quarter` so the user sees what larger and smaller fractions would do; each pick's stake
+   at those fractions is in `picks[].sizing.full`, `.half` and `.quarter`. If the user asks which
+   to use, explain the trade-off (smaller means smaller swings and slower growth) and leave the
+   choice to them.
 5. **Warnings**: pass on anything in `warnings`.
 6. **Close with**: these stakes are calculations from the user's own prices and views, not betting
    advice; KellyIQ does not pick bets or predict results. 21+, where legal.
