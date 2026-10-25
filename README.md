@@ -52,6 +52,12 @@ ready-to-use configs in [`mcp/`](mcp):
 
 Full guide: [AI assistants (MCP)](https://www.kellyiq.com/developers/mcp).
 
+### Skills
+
+[`skills/analyze-my-slate`](skills/analyze-my-slate/SKILL.md) teaches the assistant to collect your
+slate in one message, confirm before using an optimize, and explain the stakes and the risk.
+Install steps for Claude and Claude Code: [`skills/`](skills).
+
 ## Docs and support
 
 - [Quickstart](https://www.kellyiq.com/developers/quickstart), [API reference](https://www.kellyiq.com/developers/reference/optimize), [OpenAPI spec](https://www.kellyiq.com/openapi-v1.yaml)
