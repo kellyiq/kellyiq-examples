@@ -1,4 +1,4 @@
 sport,team,opponent,odds,opponent_odds,confidence
-baseball_mlb,Dodgers,Padres,-145,125,STRONG_EDGE
+baseball_mlb,Dodgers,Padres,-145,125,MODERATE_EDGE
 baseball_mlb,Cubs,Cardinals,120,-140,MODERATE_EDGE
 baseball_mlb,Mets,Braves,135,-155,MARKET

@@ -43,7 +43,7 @@ def optimize(body, max_attempts=5):
 slates = [
     {"bankroll": 1000, "picks": [
         {"sport": "baseball_mlb", "team": "Dodgers", "opponent": "Padres",
-         "odds": -145, "opponentOdds": 125, "confidence": "STRONG_EDGE"}]},
+         "odds": -145, "opponentOdds": 125, "confidence": "MODERATE_EDGE"}]},
     {"bankroll": 1000, "picks": [
         {"sport": "baseball_mlb", "team": "Cubs", "opponent": "Cardinals",
          "odds": 120, "opponentOdds": -140, "confidence": "MODERATE_EDGE"}]},

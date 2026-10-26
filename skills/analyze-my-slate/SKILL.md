@@ -30,9 +30,9 @@ allowance.
 
 The plan decides how the user gives their view of each bet:
 
-- **Free**: a confidence level only.
-- **Bettor and up**: a confidence level, or their own win probability. One kind for the whole
-  slate: if the user mixes them, ask which one to use for every bet.
+- **Free**: a confidence level only: Market, Small edge or Moderate edge. Strong edge needs Bettor.
+- **Bettor and up**: any confidence level, including Strong edge, or their own win probability.
+  One kind for the whole slate: if the user mixes them, ask which one to use for every bet.
 
 ## 2. Ask for everything in one message
 
@@ -57,8 +57,9 @@ For each bet:
 - **Your view** is a confidence level: how much more likely the user thinks their side is to win
   than the fair price says. Small edge, Moderate edge and Strong edge claim 3.5, 5 and 7.5
   probability points at even odds (less toward heavy favorites and long shots); Market claims no
-  edge. There are no fade levels: a user who thinks a side is overpriced picks the other side. On
-  Bettor and up it can instead be their win probability.
+  edge. There are no fade levels: a user who thinks a side is overpriced picks the other side. Free
+  plans can use every level except Strong edge. On Bettor and up it can instead be their win
+  probability.
 - Never fill in a price, line, probability or confidence level yourself, not even "about right"
   ones. If the user does not know a price, ask them to look it up at their sportsbook.
 
@@ -66,8 +67,9 @@ For each bet:
 
 Free plans do not accept the user's own probabilities, but the user's percentages still help them
 choose a confidence level. Call `remove_vig` with both sides of each market and show the fair
-probability next to theirs, for example *market 50%, you 56%*. Then describe the levels and let
-the user pick one for each bet. Do not pick for them.
+probability next to theirs, for example *market 50%, you 56%*. Then describe the levels the plan
+allows (Market, Small edge, Moderate edge) and let the user pick one for each bet. Do not pick
+for them.
 
 ## 4. Confirm before spending an optimize
 
@@ -91,8 +93,10 @@ allowance, even one that fails validation, so confirm with the user before any r
 
 - `VALIDATION_ERROR`: `violations` names each field and problem. Fix the input, asking the user if
   needed.
-- `UPGRADE_REQUIRED`: the plan does not allow something sent, usually the user's own
-  probabilities on Free. Switch to confidence levels, chosen by the user (step 3).
+- `UPGRADE_REQUIRED`: the plan does not allow something sent: on Free, the user's own
+  probabilities or Strong edge, or more bets than the plan allows. Tell the user what needs an
+  upgrade (`violations` names it) and let them choose what to change, for example a confidence
+  level the plan allows.
 - `SLATE_NOT_OPTIMIZABLE`: `violations` gives the reasons. Pass them on.
 - `DAILY_LIMIT_EXCEEDED`: do not retry. Tell the user when the allowance resets (`resetsAt`).
 - `BURST_LIMIT_EXCEEDED` or `SERVICE_BUSY`: wait `retryAfterSeconds` (or a minute) before one

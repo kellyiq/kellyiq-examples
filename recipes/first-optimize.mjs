@@ -6,7 +6,7 @@ const slate = {
   bankroll: 1000,
   picks: [
     { id: "lad", sport: "baseball_mlb", team: "Dodgers", opponent: "Padres",
-      odds: -145, opponentOdds: 125, confidence: "STRONG_EDGE" },
+      odds: -145, opponentOdds: 125, confidence: "MODERATE_EDGE" },
     { id: "chc", sport: "baseball_mlb", team: "Cubs", opponent: "Cardinals",
       odds: 120, opponentOdds: -140, confidence: "MODERATE_EDGE" },
     { id: "nyy", sport: "baseball_mlb", team: "Yankees", opponent: "Red Sox",
