@@ -54,9 +54,10 @@ For each bet:
 
 - **Both sides' prices are required.** KellyIQ removes the bookmaker's margin using the other side.
   For a total, the other side is the Over when the bet is the Under, and the reverse.
-- **Your view** is a confidence level: Strong edge, Moderate edge or Small edge when the user thinks
-  their side is more likely to win than the fair price says; Market for no edge; Slight, Moderate
-  or Strong fade when they think their side is less likely to win than the fair price says. On
+- **Your view** is a confidence level: how much more likely the user thinks their side is to win
+  than the fair price says. Small edge, Moderate edge and Strong edge claim 3.5, 5 and 7.5
+  probability points at even odds (less toward heavy favorites and long shots); Market claims no
+  edge. There are no fade levels: a user who thinks a side is overpriced picks the other side. On
   Bettor and up it can instead be their win probability.
 - Never fill in a price, line, probability or confidence level yourself, not even "about right"
   ones. If the user does not know a price, ask them to look it up at their sportsbook.
@@ -65,7 +66,7 @@ For each bet:
 
 Free plans do not accept the user's own probabilities, but the user's percentages still help them
 choose a confidence level. Call `remove_vig` with both sides of each market and show the fair
-probability next to theirs, for example *market 52.4%, you 56%*. Then describe the levels and let
+probability next to theirs, for example *market 50%, you 56%*. Then describe the levels and let
 the user pick one for each bet. Do not pick for them.
 
 ## 4. Confirm before spending an optimize
