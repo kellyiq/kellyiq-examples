@@ -34,7 +34,17 @@ python first-optimize.py        # or: node first-optimize.mjs
 
 Each recipe has a walkthrough in the docs: [Recipes](https://www.kellyiq.com/developers/recipes/first-optimize).
 
-Prefer a package? `pip install kellyiq` ([kellyiq-python](https://github.com/kellyiq/kellyiq-python)).
+## Python package
+
+`pip install kellyiq` ([kellyiq-python](https://github.com/kellyiq/kellyiq-python)): the same API with
+specific exceptions for each error and automatic retries when the server is busy.
+
+| Example | What it shows |
+|---|---|
+| [`python/size-a-slate.ipynb`](python/size-a-slate.ipynb) | A notebook: stakes, the probabilities behind them, and the risk at each Kelly fraction, as tables |
+| [`python/slate_from_csv.py`](python/slate_from_csv.py) | CSV in, CSV of stakes out, with each error handled ([`slate.csv`](python/slate.csv)) |
+
+Guide: [Python SDK](https://www.kellyiq.com/developers/python).
 
 ## AI assistants (MCP)
 
