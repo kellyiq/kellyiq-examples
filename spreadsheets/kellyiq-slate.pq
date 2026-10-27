@@ -1,6 +1,7 @@
 // KellyIQ slate sizing for Excel (Power Query). This is the query inside kellyiq-slate.xlsx.
 // It reads your API key from a text file (never from the workbook), sends the Slate table to
-// POST /v1/optimize and returns one row per bet. Each refresh uses one optimize.
+// POST /v1/optimize and returns one row per bet for the Results sheet. Each refresh uses one
+// optimize. The last three columns (plan and usage) are hidden on the sheet and feed its summary.
 //
 // Excel replaces the API's 401 and 403 answers with its own "credentials are invalid" message, so
 // everything the API would refuse with a 403 (plan limits) is checked here first, using the free
@@ -9,7 +10,10 @@ let
     Api = "https://api.kellyiq.com",
     FirstRow = 4,   // the sheet row of the first bet (bankroll, note and headers sit above it)
     Cell = (name as text) => Excel.CurrentWorkbook(){[Name = name]}[Content]{0}[Column1],
-    Problem = (problem as text, details as text) => #table({"Problem", "Details"}, {{problem, details}}),
+    // One column, so the text runs on across the empty cells to its right.
+    Problem = (problem as text, details as text) =>
+        #table({"Problem"}, {{problem & (if details = "" then ""
+            else (if Text.EndsWith(problem, ".") then " " else ": ") & details)}}),
 
     KeyPath = Text.Trim(Text.From(Cell("KeyFile") ?? "")),
     KeyRead = try Text.FromBinary(File.Contents(KeyPath), TextEncoding.Utf8),
@@ -24,6 +28,8 @@ let
     Rows = Table.ToRecords(Table.SelectRows(Table0, each [Team] <> null and Text.Trim(Text.From([Team])) <> "")),
     SheetRow = (k as number) => Rows{k}[Pos] + FirstRow,
 
+    // Sports are entered by name (MLB) or key (baseball_mlb) and matched against GET /v1/sports,
+    // which lists the sports that can be sized today, so a new sport needs no new workbook.
     Views = [#"Strong edge" = "STRONG_EDGE", #"Moderate edge" = "MODERATE_EDGE",
              #"Small edge" = "SMALL_EDGE", #"No edge (market price)" = "MARKET"],
     BetTypes = [Moneyline = "MONEYLINE", Spread = "SPREAD", Over = "TOTAL_OVER", Under = "TOTAL_UNDER"],
@@ -37,7 +43,7 @@ let
             r = Rows{k},
             base = [
                 id = Text.From(k),
-                sport = r[Sport],
+                sport = SportKey(r[Sport]),
                 team = r[Team],
                 opponent = r[Opponent],
                 betType = Record.Field(BetTypes, BetOf(r)),
@@ -81,9 +87,21 @@ let
     MaxBets = if Tier = "free" then 3 else if Tier = "bettor" then 12 else 50,
     StrongOnFree = Tier = "free" and List.Contains(List.Transform(Picks, each [confidence]), "STRONG_EDGE"),
     Left = Me[limits][optimize][remainingToday],
+    ResetsAt = DateTimeZone.RemoveZone(DateTimeZone.ToLocal(DateTimeZone.FromText(Me[limits][optimize][resetsAt]))),
+    ResetsText = DateTime.ToText(ResetsAt, "dddd h:mm tt", "en-US"),
+
+    SportsResponse = Call("v1/sports"),
+    Sports = Json.Document(SportsResponse)[sports],
+    SportOf = (v) => let t = Text.Lower(Text.Trim(Text.From(v ?? ""))) in
+        List.First(List.Select(Sports, each Text.Lower([name]) = t or [key] = t), null),
+    SportKey = (v) => SportOf(v)[key],
+    BadSports = List.Select(List.Positions(Rows), (k) => SportOf(Rows{k}[Sport]) = null),
 
     Response = Call("v1/optimize", [bankroll = Bankroll, picks = Picks]),
     Body = Json.Document(Response),
+    // Optimizes left after this one: GET /v1/me's count, less this run. Power Query passes on only
+    // standard response headers, so the answer's X-RateLimit-Remaining can't be read here.
+    LeftAfter = List.Max({Left - 1, 0}),
     Stakes = Record.FromList(
         List.Transform(Body[allocation][stakes], each [stake]),
         List.Transform(Body[allocation][stakes], each [id])),
@@ -99,9 +117,13 @@ let
         #"Fair probability" = if p[probability] = null then null else p[probability][market],
         #"Your probability" = if p[probability] = null then null else p[probability][yours],
         #"Expected value per $1" = p[expectedValue],
-        Note = Text.Replace(p[reason] ?? "", "_", " ")
+        Note = Text.Replace(p[reason] ?? "", "_", " "),
+        Plan = Text.Proper(Tier),
+        #"Optimizes left today" = LeftAfter,
+        #"Resets at" = ResetsAt
     ]), type table [Team = text, Bet = text, Odds = number, Stake = number, #"Fair probability" = number,
-                    #"Your probability" = number, #"Expected value per $1" = number, Note = text]),
+                    #"Your probability" = number, #"Expected value per $1" = number, Note = text,
+                    Plan = text, #"Optimizes left today" = number, #"Resets at" = datetime]),
 
     Result =
         if KeyPath = "" then Problem("No key file set", "On the Settings sheet, enter the path of the text file that holds your API key.")
@@ -112,10 +134,15 @@ let
         else if not List.IsEmpty(BadLabels) then Problem("Check row " & Text.From(SheetRow(BadLabels{0})),
             "Bet must be Moneyline, Spread, Over or Under, and Your view one of the dropdown choices.")
         else if StatusOf(MeResponse) <> 200 then ApiProblem(MeResponse)
+        else if StatusOf(SportsResponse) <> 200 then ApiProblem(SportsResponse)
+        else if not List.IsEmpty(BadSports) then Problem("Check row " & Text.From(SheetRow(BadSports{0})),
+            Text.From(Rows{BadSports{0}}[Sport] ?? "(empty)") & " can't be sized now. "
+            & (if List.IsEmpty(Sports) then "No sport is in season right now."
+               else "Sports in season: " & Text.Combine(List.Transform(Sports, each [name]), ", ") & "."))
         else if List.Count(Picks) > MaxBets then Problem("Too many bets for your plan",
             "Your plan sizes up to " & Text.From(MaxBets) & " bets per slate; this slate has " & Text.From(List.Count(Picks)) & ".")
         else if StrongOnFree then Problem("Strong edge needs the Bettor plan", "Your plan is Free: use Moderate edge or lower.")
-        else if Left <= 0 then Problem("No optimizes left today", "Your allowance resets at " & Me[limits][optimize][resetsAt] & " (UTC).")
+        else if Left <= 0 then Problem("No optimizes left today", "Your allowance resets " & ResetsText & ".")
         else if StatusOf(Response) <> 200 then ApiProblem(Response)
         else Sized
 in

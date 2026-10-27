@@ -5,7 +5,7 @@ users download the finished workbook.
     .\build-workbook.ps1                       # writes kellyiq-slate.xlsx next to this script
     .\build-workbook.ps1 -TestApi http://127.0.0.1:8765 -TestKeyFile C:\tmp\key.txt -OutFile C:\tmp\t.xlsx
 
-Nothing is refreshed at build time, so the Stakes sheet stays empty until the first refresh, the
+Nothing is refreshed at build time, so the Results sheet stays empty until the first refresh, the
 same as a user's download. With -TestApi -TestKeyFile -OutFile <elsewhere>, the query points at a
 stand-in API and the key path is filled in, for testing only.
 #>
@@ -46,13 +46,13 @@ try {
     while ($wb.Worksheets.Count -lt 4) { [void]$wb.Worksheets.Add([Type]::Missing, $wb.Worksheets.Item($wb.Worksheets.Count)) }
     $start = $wb.Worksheets.Item(1); $start.Name = "Start here"
     $slate = $wb.Worksheets.Item(2); $slate.Name = "Slate"
-    $stakes = $wb.Worksheets.Item(3); $stakes.Name = "Stakes"
+    $results = $wb.Worksheets.Item(3); $results.Name = "Results"
     $settings = $wb.Worksheets.Item(4); $settings.Name = "Settings"
 
     # ---- Start here ----------------------------------------------------------------------
     $lines = @(
         "KellyIQ: size your slate in Excel",
-        "Enter your bankroll and your bets on the Slate sheet, then Data > Refresh All. KellyIQ returns a stake for every bet on the Stakes sheet, sized across the whole slate.",
+        "Enter your bankroll and your bets on the Slate sheet, then press Ctrl+Alt+F5 (Data > Refresh All). KellyIQ returns a stake for every bet on the Results sheet, sized across the whole slate, with a summary and your remaining optimizes.",
         "",
         "One-time setup",
         "1. Create an API key in the KellyIQ app: Settings > API (every plan, Free included). https://app.kellyiq.com/settings",
@@ -61,7 +61,7 @@ try {
         "4. If Excel shows a yellow bar, click Enable Content. The first time, Excel may ask how to connect to api.kellyiq.com: choose Anonymous and Connect (your key is sent from the file). If it ever asks about any other address, click Cancel.",
         "",
         "Each time",
-        "Fill in the Slate sheet: one row per bet, with both sides' prices. Then Data > Refresh All. Each refresh uses one optimize from your daily allowance. Free sizes up to 3 bets per slate, Bettor 12, Sharp and Pro 50.",
+        "Fill in the Slate sheet: one row per bet, with both sides' prices. Then press Ctrl+Alt+F5 (Data > Refresh All) and open the Results sheet. Each run uses one optimize from your daily allowance. Free sizes up to 3 bets per slate, Bettor 12, Sharp and Pro 50.",
         "",
         "Your key is never stored in this workbook, so sharing your copy doesn't share your key. Never paste the key into a cell.",
         "Only use a workbook downloaded from the KellyIQ examples repository (github.com/kellyiq/kellyiq-examples). A workbook from someone else can contain a changed query that sends your key elsewhere.",
@@ -82,42 +82,33 @@ try {
     [void]$wb.Names.Add("Bankroll", "=Slate!`$B`$1")
     $slate.Range("B1").NumberFormat = "`$#,##0.00"
     $slate.Range("A1").Font.Bold = $true
-    # Totals live here, not beside the Stakes table: a refresh that returns a Problem row changes
-    # that table's width and would shift anything next to it. Found by header, so they survive it.
-    $slate.Range("D1").Value2 = [string]"Total stake"
-    $slate.Range("E1").Formula = '=IFERROR(SUM(INDEX(Stakes!$A:$H,0,MATCH("Stake",Stakes!$1:$1,0))),"")'
-    $slate.Range("F1").Value2 = [string]"Share of bankroll"
-    $slate.Range("G1").Formula = '=IFERROR(E1/Bankroll,"")'
-    $slate.Range("E1").NumberFormat = "`$#,##0.00"
-    $slate.Range("G1").NumberFormat = "0.0%"
-    $slate.Range("D1").Font.Bold = $true; $slate.Range("F1").Font.Bold = $true
-    $slate.Range("A2").Value2 = [string]"Data > Refresh All sizes this slate; the result is on the Stakes sheet. Each refresh uses one optimize."
-    $slate.Range("A2").Font.Italic = $true
+    $slate.Range("D1").Formula = '=HYPERLINK("#Results!A1","Go to results")'
+    # No macros, so no button: the shortcut is the quickest way to run it.
+    $slate.Range("A2").Value2 = [string]"To size this slate: press Ctrl+Alt+F5 (or Data > Refresh All). Each run uses one optimize."
+    $slate.Range("A2").Font.Bold = $true
+    $slate.Range("A2:H2").Interior.Color = 0xD9F2FF   # light amber (BGR)
     Set-Row $slate 3 @("Sport", "Team", "Opponent", "Bet", "Line", "Odds", "Other side odds", "Your view")
-    Set-Row $slate 4 @("baseball_mlb", "Dodgers", "Padres", "Moneyline", $null, -145, 125, "Moderate edge")
-    Set-Row $slate 5 @("baseball_mlb", "Cubs", "Cardinals", "Moneyline", $null, 120, -140, "Moderate edge")
-    Set-Row $slate 6 @("baseball_mlb", "Mets", "Braves", "Moneyline", $null, 135, -155, "No edge (market price)")
+    Set-Row $slate 4 @("MLB", "Dodgers", "Padres", "Moneyline", $null, -145, 125, "Moderate edge")
+    Set-Row $slate 5 @("MLB", "Cubs", "Cardinals", "Moneyline", $null, 120, -140, "Moderate edge")
+    Set-Row $slate 6 @("MLB", "Mets", "Braves", "Moneyline", $null, 135, -155, "No edge (market price)")
     $table = $slate.ListObjects.Add(1, $slate.Range("A3:H6"), $true, 1)
     $table.Name = "Slate"
     # Sports change with the seasons, so this list only warns: a sport added later can still be typed.
-    Add-List $table.ListColumns.Item("Sport").DataBodyRange "baseball_mlb,basketball_nba,basketball_ncaab,americanfootball_nfl,americanfootball_ncaaf,icehockey_nhl" 2
+    Add-List $table.ListColumns.Item("Sport").DataBodyRange "MLB,NBA,NCAAB,NFL,NCAAF,NHL" 2
     Add-List $table.ListColumns.Item("Bet").DataBodyRange "Moneyline,Spread,Over,Under"
     Add-List $table.ListColumns.Item("Your view").DataBodyRange "Strong edge,Moderate edge,Small edge,No edge (market price)"
     $notes = @(
         "Odds: American odds for your side, such as -145 or +120. Other side odds: the opposite side of the same market, so the bookmaker's margin can be removed.",
         "Bet: Moneyline, Spread, Over or Under. Line: the spread from your team's side (-1.5 means your team must win by 2 or more), or the total. Leave it empty for moneylines.",
         "Your view: how much more likely you think your side is to win than the fair price says. Strong edge needs the Bettor plan or higher.",
-        "Sport: only sports in season can be sized. Add rows by typing under the table. Free sizes up to 3 bets per slate, Bettor 12, Sharp and Pro 50."
+        "Sport: MLB, NBA, NCAAB, NFL, NCAAF or NHL, while in season. Add rows by typing under the table. Free sizes up to 3 bets per slate, Bettor 12, Sharp and Pro 50."
     )
     for ($i = 0; $i -lt $notes.Count; $i++) { $slate.Range("J3").Offset($i, 0).Value2 = [string]$notes[$i] }
     # Not wrapped: wrapping would make the bet rows beside the notes tall. The text runs on into
     # the empty columns to the right.
     [void]$table.Range.Columns.AutoFit()
-    # Row 1 sits above the table, so AutoFit on the table misses the bankroll and totals labels.
-    $minWidths = @{ 2 = 12; 4 = 12; 5 = 12; 6 = 18 }   # B bankroll; D to F the totals and their labels
-    foreach ($c in $minWidths.Keys) {
-        if ($slate.Columns.Item($c).ColumnWidth -lt $minWidths[$c]) { $slate.Columns.Item($c).ColumnWidth = $minWidths[$c] }
-    }
+    # Row 1 sits above the table, so AutoFit on the table misses the bankroll.
+    if ($slate.Columns.Item(2).ColumnWidth -lt 12) { $slate.Columns.Item(2).ColumnWidth = 12 }
 
     # ---- Settings ------------------------------------------------------------------------
     Set-Row $settings 1 @("Key file", $(if ($TestKeyFile) { $TestKeyFile } else { $keyPlaceholder }))
@@ -125,28 +116,72 @@ try {
     $settings.Range("A1").Font.Bold = $true
     $settings.Range("A3").Value2 = [string]"The full path of a text file that holds only your API key. The key itself never goes in this workbook."
     $settings.Columns.Item(2).ColumnWidth = 60
+    Set-Row $settings 5 @("Plan")
+    Set-Row $settings 6 @("Optimizes left today")
+    Set-Row $settings 7 @("Resets")
+    $settings.Range("B5").Formula = '=Results!E2'
+    $settings.Range("B6").Formula = '=Results!E3'
+    $settings.Range("B7").Formula = '=Results!E4'
+    $settings.Range("B7").NumberFormat = "dddd h:mm AM/PM"
+    $settings.Range("B5:B7").HorizontalAlignment = -4131   # xlLeft
+    $settings.Range("A8").Value2 = [string]"Updated each time you size a slate."
+    $settings.Range("A8").Font.Italic = $true
+    $settings.Columns.Item(1).ColumnWidth = 22
 
-    # ---- Stakes (the query) --------------------------------------------------------------
+    # ---- Results (the query) -------------------------------------------------------------
     $testQuery = if ($TestApi) { $query.Replace('Api = "https://api.kellyiq.com"', "Api = ""$TestApi""") } else { $query }
     if ($TestApi -and $testQuery -eq $query) { throw "Could not point the query at ${TestApi}: the Api line in kellyiq-slate.pq changed." }
-    [void]$wb.Queries.Add("Stakes", $testQuery)
+    [void]$wb.Queries.Add("Results", $testQuery)
     # The query combines a local file, this workbook and the API; without this Excel refuses
     # ("specify a privacy level for each data source"). Saved in the file.
     $wb.Queries.FastCombine = $true
-    $conn = "OLEDB;Provider=Microsoft.Mashup.OleDb.1;Data Source=`$Workbook`$;Location=Stakes;Extended Properties="""""
-    $result = $stakes.ListObjects.Add(0, $conn, $true, 1, $stakes.Range("A1"))
+    $conn = "OLEDB;Provider=Microsoft.Mashup.OleDb.1;Data Source=`$Workbook`$;Location=Results;Extended Properties="""""
+    $tableRow = 8   # the summary sits above the table
+    $first = $tableRow + 1
+    $result = $results.ListObjects.Add(0, $conn, $true, 1, $results.Range("A$tableRow"))
     $qt = $result.QueryTable
     $qt.CommandType = 2
-    $qt.CommandText = "SELECT * FROM [Stakes]"
+    $qt.CommandText = "SELECT * FROM [Results]"
     $qt.PreserveFormatting = $true
-    $qt.AdjustColumnWidth = $true
-    $qt.RefreshStyle = 0   # xlOverwriteCells: rows come and go without shifting the totals beside the table
-    $result.Name = "StakesResult"
+    $qt.AdjustColumnWidth = $false   # fixed widths below fit both the table and the summary
+    $qt.RefreshStyle = 0   # xlOverwriteCells: rows come and go without shifting the summary above
+    $result.Name = "Results"
+    # Until the first refresh the table shows Excel's "ExternalData_1: Getting Data ..." placeholder.
+    $results.Range("A$tableRow").Value2 = [string]"Your stakes appear here after Ctrl+Alt+F5 on the Slate sheet."
+
+    # The summary finds each column by its header, so after a refresh that returns a Problem row
+    # instead (a different shape) it shows blanks rather than errors.
+    function Col([string]$header) {
+        'INDEX($A$' + $first + ':$K$1000,0,MATCH("' + $header + '",$A$' + $tableRow + ':$K$' + $tableRow + ',0))'
+    }
+    Set-Row $results 1 @("This slate", $null, $null, "Your account")
+    $results.Range("A1").Font.Bold = $true; $results.Range("D1").Font.Bold = $true
+    $summary = @(
+        @("A2", "Bankroll", '=Bankroll', '$#,##0.00'),
+        @("A3", "Total stake", ('=IFERROR(SUM(' + (Col 'Stake') + '),"")'), '$#,##0.00'),
+        @("A4", "Share of bankroll", '=IFERROR(B3/B2,"")', '0.0%'),
+        @("A5", "Expected profit", ('=IFERROR(SUMPRODUCT(' + (Col 'Stake') + ',' + (Col 'Expected value per $1') + '),"")'), '$#,##0.00'),
+        @("A6", "Bets with a stake", ('=IFERROR(COUNTIF(' + (Col 'Stake') + ',">0"),"")'), '0'),
+        @("D2", "Plan", ('=IFERROR(INDEX(' + (Col 'Plan') + ',1)&"","")'), 'General'),
+        @("D3", "Optimizes left today", ('=IFERROR(INDEX(' + (Col 'Optimizes left today') + ',1)+0,"")'), '0'),
+        @("D4", "Resets", ('=IFERROR(INDEX(' + (Col 'Resets at') + ',1)+0,"")'), 'dddd h:mm AM/PM')
+    )
+    foreach ($row in $summary) {
+        $label = $results.Range($row[0]); $label.Value2 = [string]$row[1]
+        $value = $label.Offset(0, 1); $value.Formula = $row[2]; $value.NumberFormat = $row[3]
+        $value.HorizontalAlignment = -4152   # xlRight, the plan name too
+    }
+    $results.Range("G1").Formula = '=HYPERLINK("#Slate!A1","Back to slate")'
+    $widths = 20, 13, 8, 20, 19, 16, 21, 16   # A to H
+    for ($c = 0; $c -lt $widths.Count; $c++) { $results.Columns.Item($c + 1).ColumnWidth = $widths[$c] }
+    # Plan and usage ride along in the last three columns of every row, for the summary above.
+    $results.Range("I:K").EntireColumn.Hidden = $true
 
     # Number formats as always-on conditional formats: rows a refresh adds to the table come in as
     # General whatever the cells held before, but conditional formats stay on the cells.
-    $formats = @(@("D2:D1000", "`$#,##0.00"), @("E2:F1000", "0.0%"), @("G2:G1000", "0.000"))
-    foreach ($f in $formats) { $stakes.Range($f[0]).FormatConditions.Add(2, 0, "=TRUE").NumberFormat = $f[1] }
+    foreach ($f in @(@("D", "D", '$#,##0.00'), @("E", "F", '0.0%'), @("G", "G", '0.000'))) {
+        $results.Range("$($f[0])${first}:$($f[1])1000").FormatConditions.Add(2, 0, "=TRUE").NumberFormat = $f[2]
+    }
     $wb.RemovePersonalInformation = $true
     $start.Activate()
     $wb.SaveAs($OutFile, 51)

@@ -1,8 +1,9 @@
 # Excel
 
-[`kellyiq-slate.xlsx`](kellyiq-slate.xlsx): enter your bankroll and your bets, then **Data → Refresh
-All**. KellyIQ returns a stake for every bet, sized across the whole slate, with the fair probability,
-your probability and the expected value behind each one. No macros.
+[`kellyiq-slate.xlsx`](kellyiq-slate.xlsx): enter your bankroll and your bets, then press
+**Ctrl+Alt+F5** (Data → Refresh All). KellyIQ returns a stake for every bet, sized across the whole
+slate, with the fair probability, your probability and the expected value behind each one, and a
+summary of the slate. No macros.
 
 Excel for Windows only (Microsoft 365, or Excel 2021 or later). Excel for Mac and Excel for the web
 can't run it: the workbook reads your key from a file on your computer, and calls the API through
@@ -25,14 +26,18 @@ how to connect to any address other than `api.kellyiq.com`, click **Cancel**.
 
 **Only use a workbook downloaded from this repository.** Sharing your copy doesn't share your key, but a
 workbook from someone else can contain a changed query that reads your key file and sends it
-elsewhere. To check a copy: Data → Queries & Connections → Stakes → Advanced Editor should show
+elsewhere. To check a copy: Data → Queries & Connections → Results → Advanced Editor should show
 `Api = "https://api.kellyiq.com"`. The workbook only ever sends a file that looks like a KellyIQ key.
 
 ## Each time
 
-Fill in the **Slate** sheet, one row per bet, with both sides' prices, then **Data → Refresh All**. The
-result is on the **Stakes** sheet, and the total stake and share of bankroll are next to your bankroll.
-Each refresh uses one optimize from your daily allowance; the plan check that runs first is free, and
+Fill in the **Slate** sheet, one row per bet, with both sides' prices, then press **Ctrl+Alt+F5**
+(Data → Refresh All). There's no Optimize button, because a button would need macros. The stakes are
+on the **Results** sheet, under a summary: bankroll, total stake, share of bankroll, expected profit,
+and your plan with the optimizes left today (also on the Settings sheet), updated after each
+successful run.
+
+Each run uses one optimize from your daily allowance. The plan and sport checks that run first are free, and
 nothing is sent when the workbook can already see a problem. Opening the query in the Power Query
 Editor runs it too, so that can use an optimize as well.
 
@@ -40,7 +45,7 @@ A slate holds up to 3 bets on Free, 12 on Bettor, and 50 on Sharp and Pro.
 
 | Column | What to enter |
 |---|---|
-| Sport | A sport in season (dropdown) |
+| Sport | MLB, NBA, NCAAB, NFL, NCAAF or NHL, while in season (dropdown) |
 | Team, Opponent | The team you're betting, and the other team |
 | Bet | Moneyline, Spread, Over or Under |
 | Line | The spread from your team's side (-1.5 means your team must win by 2 or more), or the total. Empty for moneylines |
@@ -50,7 +55,7 @@ A slate holds up to 3 bets on Free, 12 on Bettor, and 50 on Sharp and Pro.
 
 ## If something goes wrong
 
-Most problems show as a **Problem** row on the Stakes sheet, with the row and field to fix.
+Most problems show as a **Problem** row on the Results sheet, with the row and field to fix.
 
 | You see | What it means |
 |---|---|
@@ -59,7 +64,8 @@ Most problems show as a **Problem** row on the Stakes sheet, with the row and fi
 | Key file not found | The path on the Settings sheet doesn't match where the file is |
 | That file doesn't hold an API key | The key file should contain only the key: `kiqa_` and 43 more characters |
 | Too many bets for your plan | Remove bets, or upgrade: Free sizes 3 per slate, Bettor 12 |
-| No optimizes left today | Your allowance resets at the time shown (UTC) |
+| *Check row N: … can't be sized now* | That sport is out of season; the message lists the ones in season |
+| No optimizes left today | Your allowance resets at the time shown |
 
 ## For maintainers
 

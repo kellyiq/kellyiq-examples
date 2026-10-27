@@ -49,7 +49,7 @@ Guide: [Python SDK](https://www.kellyiq.com/developers/python).
 ## Excel
 
 [`spreadsheets/kellyiq-slate.xlsx`](spreadsheets/kellyiq-slate.xlsx): enter your bankroll and your
-bets, then Data → Refresh All, and get a stake for every bet. No macros, and your API key stays in a
+bets, press Ctrl+Alt+F5, and get a stake for every bet with a summary of the slate. No macros, and your API key stays in a
 file on your computer, never in the workbook. Excel for Windows. Setup: [`spreadsheets/`](spreadsheets).
 
 ## AI assistants (MCP)
