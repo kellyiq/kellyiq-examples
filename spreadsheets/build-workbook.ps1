@@ -3,17 +3,16 @@ Builds kellyiq-slate.xlsx from kellyiq-slate.pq with Excel for Windows (COM). Ma
 users download the finished workbook.
 
     .\build-workbook.ps1                       # writes kellyiq-slate.xlsx next to this script
-    .\build-workbook.ps1 -TestApi http://127.0.0.1:8765 -TestKeyFile C:\tmp\key.txt
+    .\build-workbook.ps1 -TestApi http://127.0.0.1:8765 -TestKeyFile C:\tmp\key.txt -OutFile C:\tmp\t.xlsx
 
-Release builds take no test switches: nothing is refreshed, so the Stakes sheet stays empty until
-the user's first refresh. With -TestApi -TestKeyFile -KeepTestQuery -OutFile <elsewhere>, the query
-points at a stand-in API and is refreshed, for testing only.
+Nothing is refreshed at build time, so the Stakes sheet stays empty until the first refresh, the
+same as a user's download. With -TestApi -TestKeyFile -OutFile <elsewhere>, the query points at a
+stand-in API and the key path is filled in, for testing only.
 #>
 param(
     [string]$OutFile = (Join-Path $PSScriptRoot "kellyiq-slate.xlsx"),
     [string]$TestApi = "",
-    [string]$TestKeyFile = "",
-    [switch]$KeepTestQuery   # for scenario tests: leave the stand-in API and key path in place
+    [string]$TestKeyFile = ""
 )
 $ErrorActionPreference = "Stop"
 $query = Get-Content -Raw (Join-Path $PSScriptRoot "kellyiq-slate.pq")
@@ -111,8 +110,14 @@ try {
         "Sport: only sports in season can be sized. Add rows by typing under the table. Free sizes up to 3 bets per slate, Bettor 12, Sharp and Pro 50."
     )
     for ($i = 0; $i -lt $notes.Count; $i++) { $slate.Range("J3").Offset($i, 0).Value2 = [string]$notes[$i] }
-    $slate.Columns.Item(10).ColumnWidth = 90; $slate.Columns.Item(10).WrapText = $true
+    # Not wrapped: wrapping would make the bet rows beside the notes tall. The text runs on into
+    # the empty columns to the right.
     [void]$table.Range.Columns.AutoFit()
+    # Row 1 sits above the table, so AutoFit on the table misses the bankroll and totals labels.
+    $minWidths = @{ 2 = 12; 4 = 12; 5 = 12; 6 = 18 }   # B bankroll; D to F the totals and their labels
+    foreach ($c in $minWidths.Keys) {
+        if ($slate.Columns.Item($c).ColumnWidth -lt $minWidths[$c]) { $slate.Columns.Item($c).ColumnWidth = $minWidths[$c] }
+    }
 
     # ---- Settings ------------------------------------------------------------------------
     Set-Row $settings 1 @("Key file", $(if ($TestKeyFile) { $TestKeyFile } else { $keyPlaceholder }))
@@ -124,7 +129,7 @@ try {
     # ---- Stakes (the query) --------------------------------------------------------------
     $testQuery = if ($TestApi) { $query.Replace('Api = "https://api.kellyiq.com"', "Api = ""$TestApi""") } else { $query }
     if ($TestApi -and $testQuery -eq $query) { throw "Could not point the query at ${TestApi}: the Api line in kellyiq-slate.pq changed." }
-    $q = $wb.Queries.Add("Stakes", $testQuery)
+    [void]$wb.Queries.Add("Stakes", $testQuery)
     # The query combines a local file, this workbook and the API; without this Excel refuses
     # ("specify a privacy level for each data source"). Saved in the file.
     $wb.Queries.FastCombine = $true
@@ -138,18 +143,10 @@ try {
     $qt.RefreshStyle = 0   # xlOverwriteCells: rows come and go without shifting the totals beside the table
     $result.Name = "StakesResult"
 
-    if ($TestApi) {
-        [void]$qt.Refresh($false)
-        if (-not $KeepTestQuery) {
-            $q.Formula = $query                            # production query back in
-            $settings.Range("B1").Value2 = [string]$keyPlaceholder
-        }
-    }
-
-    # Whole-column formats, set after any refresh so every row the query writes picks them up.
-    $stakes.Range("D2:D1000").NumberFormat = "`$#,##0.00"
-    $stakes.Range("E2:F1000").NumberFormat = "0.0%"
-    $stakes.Range("G2:G1000").NumberFormat = "0.000"
+    # Number formats as always-on conditional formats: rows a refresh adds to the table come in as
+    # General whatever the cells held before, but conditional formats stay on the cells.
+    $formats = @(@("D2:D1000", "`$#,##0.00"), @("E2:F1000", "0.0%"), @("G2:G1000", "0.000"))
+    foreach ($f in $formats) { $stakes.Range($f[0]).FormatConditions.Add(2, 0, "=TRUE").NumberFormat = $f[1] }
     $wb.RemovePersonalInformation = $true
     $start.Activate()
     $wb.SaveAs($OutFile, 51)
