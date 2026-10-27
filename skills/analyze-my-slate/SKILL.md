@@ -77,6 +77,11 @@ Each `optimize_slate` call uses one of the user's daily optimizes. Before callin
 summary: the bankroll, each bet with both prices and the user's view, and how many optimizes are
 left today. Ask the user to confirm. Call it after they say go.
 
+Only a clear go counts, such as "go", "yes" or "run it". A reply that only fills in a missing side,
+price, line or view is not one: show the updated summary and ask again. If you asked anything else in
+the same message, such as which side they are betting, get the answer before calling. This applies to
+every optimize, including retries and what-ifs.
+
 ## 5. Call optimize_slate once
 
 Send every bet in one call. Use the sport keys from `list_sports`.
