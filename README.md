@@ -46,6 +46,12 @@ specific exceptions for each error and automatic retries when the server is busy
 
 Guide: [Python SDK](https://www.kellyiq.com/developers/python).
 
+## Excel
+
+[`spreadsheets/kellyiq-slate.xlsx`](spreadsheets/kellyiq-slate.xlsx): enter your bankroll and your
+bets, then Data → Refresh All, and get a stake for every bet. No macros, and your API key stays in a
+file on your computer, never in the workbook. Excel for Windows. Setup: [`spreadsheets/`](spreadsheets).
+
 ## AI assistants (MCP)
 
 KellyIQ runs a hosted MCP server at `https://api.kellyiq.com/mcp`, so your assistant can size a
