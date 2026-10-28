@@ -42,6 +42,7 @@ only for what is missing:
 
 ```
 Bankroll: $____
+Limits (optional): Kelly fraction ____, most on one bet ____%, most on the slate ____%
 
 For each bet:
   Game:       ____ vs ____  (sport: ____)
@@ -90,8 +91,15 @@ Send every bet in one call. Use the sport keys from `list_sports`.
   for totals, it is the total.
 - Bets in the same game: give them the same `eventId` (any label, such as `"OSU-PSU"`) so KellyIQ
   treats them as one game.
-- Leave the limits (`maxTotalExposure`, `perBetCap`, `maxBets`) out unless the user asked for
-  different ones; the account's saved settings apply. There is no Kelly fraction input.
+- Settings the user gave go in as given, each a fraction: `kellyFraction` for their Kelly fraction
+  (quarter Kelly is 0.25), `perBetCap` for the most on one bet and `maxTotalExposure` for the most
+  on the slate, both as fractions of the bankroll (2% is 0.02), and `maxBets` for a bet-count
+  limit. Do not rescale them: stakes are sized on the whole bankroll and both limits are hard caps.
+- Leave out any setting the user did not give; the account's saved settings apply (a saved
+  CVaR-aware setting on Sharp and up means the risk-adjusted mode chooses the fraction), else
+  quarter Kelly, 100% of the bankroll on the slate and 20% on any one bet.
+- On Free, the most on one bet is fixed at 25% of the slate limit; a `perBetCap` sent anyway is
+  ignored and a warning says so. Tell the user if they asked for a different one.
 
 If it returns an error, read the `error` code. Every attempt the API accepts counts toward today's
 allowance, even one that fails validation, so confirm with the user before any retry.
@@ -115,20 +123,26 @@ adjust them.
 1. **Stakes**: `allocation.stakes`, one dollar amount per bet, and `allocation.totalStake`. Bets
    with no stake are in `picks[]` with `included: false` and a `reason`: `NO_EDGE` (the user's
    view puts no edge on that price), `MAX_BETS` (more bets than the bet-count limit allows),
-   `NOT_SELECTED` (the optimizer gave it no stake in this allocation) or `NOT_PRICEABLE` (the
-   prices could not be used). Describe the reason; do not tell the user to drop or keep the bet.
-2. **Limits**: `atRisk` is the most of the bankroll the slate could stake
-   (bankroll × total exposure). `settingsApplied` shows each limit and where it came from (the
-   request, the account's saved settings, or the plan default). Mention when a limit is what held
-   a stake down.
+   `BUDGET` (it has an edge, but the slate limit was used up by bets with more), `NOT_SELECTED`
+   (the optimizer gave it no stake in this allocation) or `NOT_PRICEABLE` (the prices could not be
+   used). Describe the reason; do not tell the user to drop or keep the bet.
+2. **Limits**: stakes are sized on the whole bankroll, then held to two caps. `atRisk` is the
+   most the slate could stake (bankroll × total exposure). `settingsApplied` shows each setting
+   and where it came from (the request, the account's saved settings, or the plan default), and
+   gives both limits in dollars (`perBetCapAmount`, `maxTotalExposureAmount`). Mention when a
+   limit is what held a stake down: a stake equal to `perBetCapAmount`, or a total equal to
+   `atRisk`.
 3. **Why each stake is that size**: for each pick, `probability.market` (the fair price with the
    margin removed) against `probability.yours` (the probability that drove sizing), and
    `expectedValue` (expected profit per $1 staked, not a dollar total). A bigger gap between yours
    and the market means a bigger stake; for the same gap, longer odds get a smaller stake. All the
-   bets share one bankroll and the exposure limit, so stakes are usually smaller than each bet
-   sized alone.
+   bets share one bankroll and the limits, so stakes are usually smaller than each bet sized
+   alone.
 4. **Kelly fraction and risk**: `allocation.kellyMultiplier` is the fraction of full Kelly the
-   optimizer chose (for example 0.35). From `risk.riskAdjusted.independent` (the allocation used):
+   stakes are sized at, and `allocation.basis` says where it came from: `REQUESTED` (the user's
+   `kellyFraction`), `ACCOUNT_DEFAULT` (their saved app setting), `PRODUCT_DEFAULT` (quarter
+   Kelly) or `RISK_ADJUSTED` (chosen by the risk-adjusted mode on the user's saved CVaR setting;
+   only then is `riskConstraintMet` set). From `risk.allocation.independent` (these stakes):
    the chance the slate loses money overall (`probLoss`, show it as a percent), the expected
    profit (`meanProfit`), and `var5` (1 in 20 slates end at this result or worse). These treat
    the bets as independent (`correlated` is always null). If some bets are related, such as two
@@ -142,8 +156,8 @@ adjust them.
 6. **Close with**: these stakes are calculations from the user's own prices and views, not betting
    advice; KellyIQ does not pick bets or predict results. 21+, where legal.
 
-`explanation` holds a plain-English summary you may quote, but its wording changes and its
-percentages are of the at-risk amount, not the bankroll, so take numbers from the fields above.
+`explanation` holds a plain-English summary you may quote, but its wording changes, so take
+numbers from the fields above.
 
 ## 7. What-ifs
 

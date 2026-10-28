@@ -42,7 +42,7 @@ for (const p of result.picks) {
 }
 
 // 3. The allocation's risk, from 100,000 simulated slates.
-const risk = result.risk.riskAdjusted.independent;
+const risk = result.risk.allocation.independent;
 if (risk) {
   console.log(`\nAverage profit ${usd(risk.meanProfit)}, chance of losing money ${Math.round(risk.probLoss * 100)}%, ` +
     `worst 5% average ${usd(risk.cvar5)}`);

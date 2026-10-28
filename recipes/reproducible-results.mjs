@@ -8,6 +8,7 @@ const KEY = process.env.KELLYIQ_API_KEY;
 const slate = {
   bankroll: 1000,
   // Settings in the request, not from your app settings, which you might change later.
+  kellyFraction: 0.25,
   maxTotalExposure: 0.5,
   perBetCap: 0.2,
   useAccountDefaults: false,

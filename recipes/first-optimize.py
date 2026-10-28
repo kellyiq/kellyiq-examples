@@ -48,7 +48,7 @@ for p in result["picks"]:
         print(f"{p['team']} {p['odds']:+d}: no stake ({p['reason']})")
 
 # 3. The allocation's risk, from 100,000 simulated slates.
-risk = result["risk"]["riskAdjusted"]["independent"]
+risk = result["risk"]["allocation"]["independent"]
 if risk is not None:
     print(f"\nAverage profit {usd(risk['meanProfit'])}, chance of losing money {risk['probLoss']:.0%}, "
           f"worst 5% average {usd(risk['cvar5'])}")
