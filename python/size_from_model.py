@@ -36,4 +36,4 @@ result = client.optimize({
 stakes = pd.DataFrame(result["allocation"]["stakes"])[["id", "stake"]]
 slate = slate.merge(stakes, on="id", how="left").fillna({"stake": 0})
 print(slate[["team", "odds", "p", "stake"]])
-print("Total staked:", slate["stake"].sum())
+print(f"Total staked: ${slate['stake'].sum():,.2f}")
