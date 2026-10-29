@@ -43,6 +43,7 @@ specific exceptions for each error and automatic retries when the server is busy
 |---|---|
 | [`python/size-a-slate.ipynb`](python/size-a-slate.ipynb) | A notebook: stakes, the probabilities behind them, and the risk at each Kelly fraction, as tables |
 | [`python/slate_from_csv.py`](python/slate_from_csv.py) | CSV in, CSV of stakes out, with each error handled ([`slate.csv`](python/slate.csv)) |
+| [`python/size_from_model.py`](python/size_from_model.py) | Your model's probabilities in, stakes merged back into the DataFrame ([`model_output.csv`](python/model_output.csv)); needs `pandas` |
 
 Guide: [Python SDK](https://www.kellyiq.com/developers/python).
 
@@ -51,6 +52,12 @@ Guide: [Python SDK](https://www.kellyiq.com/developers/python).
 [`spreadsheets/kellyiq-slate.xlsx`](spreadsheets/kellyiq-slate.xlsx): enter your bankroll and your
 bets, press Ctrl+Alt+F5, and get a stake for every bet with a summary of the slate. No macros, and your API key stays in a
 file on your computer, never in the workbook. Excel for Windows. Setup: [`spreadsheets/`](spreadsheets).
+
+## Benchmark
+
+[`benchmarks/slate-sizing`](benchmarks/slate-sizing): three NBA slates sized by cap-then-scale, by
+the exact constrained optimum and by KellyIQ, scored by exact expected log growth. The slates, the
+scoring script and every stake are included so you can rerun it.
 
 ## AI assistants (MCP)
 

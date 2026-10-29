@@ -1,0 +1,52 @@
+{
+  "_note": "Three NBA moneyline slates written Oct 27, 2026, before any run. Prices are realistic two-sided moneylines; p is the bettor's own win probability, treated as true for scoring. One bet per game, no game repeated within a slate, so the bets are independent.",
+  "request": {"bankroll": 10000, "kellyFraction": 0.25, "perBetCap": 0.02, "maxTotalExposure": 0.1},
+  "slates": {
+    "A": [
+      {"id": "A1", "team": "Boston Celtics", "opponent": "Washington Wizards", "odds": -250, "opponentOdds": 205, "p": 0.74},
+      {"id": "A2", "team": "New York Knicks", "opponent": "Miami Heat", "odds": -135, "opponentOdds": 115, "p": 0.59},
+      {"id": "A3", "team": "Denver Nuggets", "opponent": "Phoenix Suns", "odds": -110, "opponentOdds": -110, "p": 0.55},
+      {"id": "A4", "team": "Indiana Pacers", "opponent": "Milwaukee Bucks", "odds": 120, "opponentOdds": -142, "p": 0.48},
+      {"id": "A5", "team": "Charlotte Hornets", "opponent": "Cleveland Cavaliers", "odds": 260, "opponentOdds": -320, "p": 0.3},
+      {"id": "A6", "team": "Sacramento Kings", "opponent": "New Orleans Pelicans", "odds": -105, "opponentOdds": -115, "p": 0.53},
+      {"id": "A7", "team": "Utah Jazz", "opponent": "Oklahoma City Thunder", "odds": 700, "opponentOdds": -1100, "p": 0.14},
+      {"id": "A8", "team": "Los Angeles Lakers", "opponent": "Golden State Warriors", "odds": 145, "opponentOdds": -170, "p": 0.43}
+    ],
+    "B": [
+      {"id": "B1", "team": "Oklahoma City Thunder", "opponent": "Toronto Raptors", "odds": -400, "opponentOdds": 320, "p": 0.82},
+      {"id": "B2", "team": "Cleveland Cavaliers", "opponent": "Orlando Magic", "odds": -160, "opponentOdds": 135, "p": 0.64},
+      {"id": "B3", "team": "Minnesota Timberwolves", "opponent": "Dallas Mavericks", "odds": -120, "opponentOdds": 100, "p": 0.57},
+      {"id": "B4", "team": "Houston Rockets", "opponent": "Memphis Grizzlies", "odds": 105, "opponentOdds": -125, "p": 0.51},
+      {"id": "B5", "team": "San Antonio Spurs", "opponent": "LA Clippers", "odds": 170, "opponentOdds": -205, "p": 0.4},
+      {"id": "B6", "team": "Chicago Bulls", "opponent": "New York Knicks", "odds": 240, "opponentOdds": -295, "p": 0.32},
+      {"id": "B7", "team": "Brooklyn Nets", "opponent": "Boston Celtics", "odds": 550, "opponentOdds": -800, "p": 0.17},
+      {"id": "B8", "team": "Atlanta Hawks", "opponent": "Detroit Pistons", "odds": -115, "opponentOdds": -105, "p": 0.55},
+      {"id": "B9", "team": "Portland Trail Blazers", "opponent": "Denver Nuggets", "odds": 400, "opponentOdds": -520, "p": 0.22},
+      {"id": "B10", "team": "Philadelphia 76ers", "opponent": "Miami Heat", "odds": -140, "opponentOdds": 118, "p": 0.6},
+      {"id": "B11", "team": "Golden State Warriors", "opponent": "Sacramento Kings", "odds": -110, "opponentOdds": -110, "p": 0.545},
+      {"id": "B12", "team": "New Orleans Pelicans", "opponent": "Phoenix Suns", "odds": 130, "opponentOdds": -155, "p": 0.465}
+    ],
+    "C": [
+      {"id": "C1", "team": "Boston Celtics", "opponent": "Charlotte Hornets", "odds": -310, "opponentOdds": 250, "p": 0.78},
+      {"id": "C2", "team": "Milwaukee Bucks", "opponent": "Indiana Pacers", "odds": -125, "opponentOdds": 105, "p": 0.575},
+      {"id": "C3", "team": "Los Angeles Lakers", "opponent": "LA Clippers", "odds": -105, "opponentOdds": -115, "p": 0.53},
+      {"id": "C4", "team": "Orlando Magic", "opponent": "New York Knicks", "odds": 150, "opponentOdds": -180, "p": 0.43},
+      {"id": "C5", "team": "Washington Wizards", "opponent": "Cleveland Cavaliers", "odds": 600, "opponentOdds": -900, "p": 0.16},
+      {"id": "C6", "team": "Memphis Grizzlies", "opponent": "Houston Rockets", "odds": -150, "opponentOdds": 125, "p": 0.62},
+      {"id": "C7", "team": "Miami Heat", "opponent": "Atlanta Hawks", "odds": 110, "opponentOdds": -130, "p": 0.5},
+      {"id": "C8", "team": "Toronto Raptors", "opponent": "Philadelphia 76ers", "odds": 280, "opponentOdds": -350, "p": 0.28},
+      {"id": "C9", "team": "Dallas Mavericks", "opponent": "Minnesota Timberwolves", "odds": -135, "opponentOdds": 115, "p": 0.595},
+      {"id": "C10", "team": "Utah Jazz", "opponent": "San Antonio Spurs", "odds": 360, "opponentOdds": -460, "p": 0.24},
+      {"id": "C11", "team": "Oklahoma City Thunder", "opponent": "Portland Trail Blazers", "odds": -600, "opponentOdds": 450, "p": 0.875},
+      {"id": "C12", "team": "Phoenix Suns", "opponent": "Denver Nuggets", "odds": 115, "opponentOdds": -135, "p": 0.49},
+      {"id": "C13", "team": "Detroit Pistons", "opponent": "Chicago Bulls", "odds": 190, "opponentOdds": -230, "p": 0.37},
+      {"id": "C14", "team": "Sacramento Kings", "opponent": "New Orleans Pelicans", "odds": -110, "opponentOdds": -110, "p": 0.545},
+      {"id": "C15", "team": "Golden State Warriors", "opponent": "Minnesota Timberwolves", "odds": 125, "opponentOdds": -148, "p": 0.47},
+      {"id": "C16", "team": "Brooklyn Nets", "opponent": "Milwaukee Bucks", "odds": 330, "opponentOdds": -420, "p": 0.255},
+      {"id": "C17", "team": "Atlanta Hawks", "opponent": "Charlotte Hornets", "odds": -175, "opponentOdds": 148, "p": 0.66},
+      {"id": "C18", "team": "Boston Celtics", "opponent": "Cleveland Cavaliers", "odds": 105, "opponentOdds": -125, "p": 0.51},
+      {"id": "C19", "team": "LA Clippers", "opponent": "Utah Jazz", "odds": -220, "opponentOdds": 182, "p": 0.715},
+      {"id": "C20", "team": "New York Knicks", "opponent": "Philadelphia 76ers", "odds": -120, "opponentOdds": 100, "p": 0.565}
+    ]
+  }
+}

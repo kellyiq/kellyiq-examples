@@ -1,0 +1,73 @@
+Slate sizing benchmark: exact references
+Request: $10000 bankroll, 0.25 Kelly, 2% per bet, 10% total
+
+Slate A (8 bets)
+  id      odds      p        R1        R3
+  A1     -250  0.740    200.00    200.00
+  A2     -135  0.590     91.25     91.52
+  A3     -110  0.550    137.50    137.77
+  A4      120  0.480    116.67    116.27
+  A5      260  0.300     76.92     75.54
+  A6     -105  0.530     91.25     91.27
+  A7      700  0.140     42.86     41.29
+  A8      145  0.430     92.24     91.66
+  total                  848.69    845.32
+  expected log growth, bps of bankroll per slate: R1 37.168, R3 36.924
+
+Slate B (12 bets)
+  id      odds      p        R1        R3
+  B1     -400  0.820    148.25    138.92
+  B2     -160  0.640    118.60    114.37
+  B3     -120  0.570    100.07    100.12
+  B4      105  0.510     80.30     80.15
+  B5      170  0.400     87.21     98.89
+  B6      240  0.320     67.95     77.64
+  B7      550  0.170     35.38     40.84
+  B8     -115  0.550     60.23     47.40
+  B9      400  0.220     46.33     53.39
+  B10    -140  0.600     74.13     59.07
+  B11    -110  0.545     82.47     78.97
+  B12     130  0.465     99.07    110.23
+  total                 1000.00   1000.00
+  expected log growth, bps of bankroll per slate: R1 47.055, R3 48.978
+
+Slate C (20 bets)
+  id      odds      p        R1        R3
+  C1     -310  0.780     84.95     62.48
+  C2     -125  0.575     46.46     34.59
+  C3     -105  0.530     38.76     28.26
+  C4      150  0.430     53.09     84.01
+  C5      600  0.160     21.24     38.19
+  C6     -150  0.620     53.09     35.45
+  C7      110  0.500     48.27     58.99
+  C8      280  0.280     24.27     34.89
+  C9     -135  0.595     51.24     40.01
+  C10     360  0.240     30.68     53.61
+  C11    -600  0.875     84.95      0.00
+  C12     115  0.490     49.40     63.94
+  C13     190  0.370     40.80     63.34
+  C14    -110  0.545     47.25     45.41
+  C15     125  0.470     48.85     66.63
+  C16     330  0.255     31.05     53.16
+  C17    -175  0.660     69.02     58.80
+  C18     105  0.510     46.02     51.16
+  C19    -220  0.715     84.95     91.42
+  C20    -120  0.565     45.66     35.68
+  total                 1000.00   1000.00
+  expected log growth, bps of bankroll per slate: R1 45.180, R3 52.455
+
+Scoring
+
+== KellyIQ
+  run1 A: total $841.53, per-bet cap ok, slate limit ok, growth 36.595 bps (-1.5% vs R1, -0.9% vs R3)
+  run1 B: total $1000.00, per-bet cap ok, slate limit ok, growth 48.631 bps (+3.3% vs R1, -0.7% vs R3)
+  run1 C: total $1000.00, per-bet cap ok, slate limit ok, growth 52.145 bps (+15.4% vs R1, -0.6% vs R3)
+  run2 A: total $841.53, per-bet cap ok, slate limit ok, growth 36.595 bps (-1.5% vs R1, -0.9% vs R3)
+  run2 B: total $1000.00, per-bet cap ok, slate limit ok, growth 48.631 bps (+3.3% vs R1, -0.7% vs R3)
+  run2 C: total $1000.00, per-bet cap ok, slate limit ok, growth 52.145 bps (+15.4% vs R1, -0.6% vs R3)
+  run3 A: total $841.53, per-bet cap ok, slate limit ok, growth 36.595 bps (-1.5% vs R1, -0.9% vs R3)
+  run3 B: total $1000.00, per-bet cap ok, slate limit ok, growth 48.631 bps (+3.3% vs R1, -0.7% vs R3)
+  run3 C: total $1000.00, per-bet cap ok, slate limit ok, growth 52.145 bps (+15.4% vs R1, -0.6% vs R3)
+  repeatability A: largest single-stake difference across 3 runs $0.00
+  repeatability B: largest single-stake difference across 3 runs $0.00
+  repeatability C: largest single-stake difference across 3 runs $0.00

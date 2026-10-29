@@ -1,0 +1,13 @@
+id,team,opponent,odds,opponent_odds,p
+OKC,Oklahoma City Thunder,Toronto Raptors,-400,320,0.82
+CLE,Cleveland Cavaliers,Orlando Magic,-160,135,0.64
+MIN,Minnesota Timberwolves,Dallas Mavericks,-120,100,0.57
+HOU,Houston Rockets,Memphis Grizzlies,105,-125,0.51
+SAS,San Antonio Spurs,LA Clippers,170,-205,0.40
+CHI,Chicago Bulls,New York Knicks,240,-295,0.32
+BKN,Brooklyn Nets,Boston Celtics,550,-800,0.17
+ATL,Atlanta Hawks,Detroit Pistons,-115,-105,0.55
+POR,Portland Trail Blazers,Denver Nuggets,400,-520,0.22
+PHI,Philadelphia 76ers,Miami Heat,-140,118,0.60
+GSW,Golden State Warriors,Sacramento Kings,-110,-110,0.545
+NOP,New Orleans Pelicans,Phoenix Suns,130,-155,0.465
