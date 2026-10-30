@@ -44,6 +44,7 @@ specific exceptions for each error and automatic retries when the server is busy
 | [`python/size-a-slate.ipynb`](python/size-a-slate.ipynb) | A notebook: stakes, the probabilities behind them, and the risk at each Kelly fraction, as tables |
 | [`python/slate_from_csv.py`](python/slate_from_csv.py) | CSV in, CSV of stakes out, with each error handled ([`slate.csv`](python/slate.csv)) |
 | [`python/size_from_model.py`](python/size_from_model.py) | Your model's probabilities in, stakes merged back into the DataFrame ([`model_output.csv`](python/model_output.csv)); needs `pandas` |
+| [`python/nba_home_teams.py`](python/nba_home_teams.py) | A real NBA slate (DraftKings prices, Oct 30, 2026) sized with every home team at the same assumed Moderate Edge ([`nba_2026-10-30.csv`](python/nba_2026-10-30.csv)); needs `pandas` |
 
 Guide: [Python SDK](https://www.kellyiq.com/developers/python).
 
