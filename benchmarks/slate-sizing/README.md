@@ -56,9 +56,11 @@ connector, each sending the request above.
 - **Limits**: every KellyIQ stake is within $200, and every slate total is within $1,000.
 - **Repeatability**: the three runs returned identical stakes, to the cent, on every bet.
 - **Slate A**: the 10% limit doesn't bind (only one bet reaches the 2% cap), and all three methods
-  stake about $845. At quarter Kelly, slightly larger stakes score slightly higher on log growth, so
-  R1 comes out ahead of both R3 and KellyIQ. KellyIQ is also 0.9% below R3 because its objective
-  approximates log growth rather than computing it exactly.
+  stake about $845 (R1 $848.69, R3 $845.32, KellyIQ $841.53). R3 maximizes quarter-Kelly utility,
+  not the log growth it's scored on, and at quarter Kelly slightly larger stakes score slightly
+  higher on log growth. R1 stakes a little more in total and a little more on the long shots, so it
+  comes out ahead of both R3 and KellyIQ. KellyIQ is 0.9% below R3 for two reasons: it stakes $3.79
+  less, and its objective approximates log growth rather than computing it exactly.
 - **Slates B and C**: the 10% limit binds. Scaling every bet down by the same factor keeps the
   proportions single-bet Kelly chose for each bet on its own. Sizing the slate jointly splits the
   same $1,000 differently, for more expected log growth. KellyIQ lands within 0.7% of the exact
