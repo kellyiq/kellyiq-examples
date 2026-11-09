@@ -45,6 +45,7 @@ specific exceptions for each error and automatic retries when the server is busy
 | [`python/slate_from_csv.py`](python/slate_from_csv.py) | CSV in, CSV of stakes out, with each error handled ([`slate.csv`](python/slate.csv)) |
 | [`python/size_from_model.py`](python/size_from_model.py) | Your model's probabilities in, stakes merged back into the DataFrame ([`model_output.csv`](python/model_output.csv)); needs `pandas` |
 | [`python/nba_home_teams.py`](python/nba_home_teams.py) | A real NBA slate (DraftKings prices, Oct 30, 2026) sized with every home team at the same assumed Moderate Edge ([`nba_2026-10-30.csv`](python/nba_2026-10-30.csv)); needs `pandas` |
+| [`python/nba_bad_night.py`](python/nba_bad_night.py) | A real NBA slate (DraftKings prices, Nov 9, 2026) sized with every home team at the same assumed Moderate Edge, then the simulated risk of that allocation: the chance of finishing down and the 5th-percentile night ([`nba_2026-11-09.csv`](python/nba_2026-11-09.csv)); needs `pandas` |
 
 Guide: [Python SDK](https://www.kellyiq.com/developers/python).
 
